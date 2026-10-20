@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/axios';
 import toast from 'react-hot-toast';
 import {
   Building2,
@@ -67,8 +67,8 @@ const EmployerRegistration = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        'http://localhost:3000/api/auth/register',
+const response = await api.post(
+  '/auth/register',
         {
           role: 'employer',
           name: form.recruiterName.trim(),

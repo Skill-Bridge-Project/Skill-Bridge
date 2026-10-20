@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState } from 'react';
 import api from '../lib/axios';
 
@@ -18,7 +19,6 @@ export function AuthProvider({ children }) {
       localStorage.getItem('token') ||
       '';
 
-    // Migrate an older token to the shared key.
     if (savedToken && !localStorage.getItem('sb_token')) {
       localStorage.setItem('sb_token', savedToken);
     }
@@ -26,28 +26,34 @@ export function AuthProvider({ children }) {
     return savedToken;
   });
 
-  const login = async (email, password) => {
-    const response = await api.post('/auth/login', {
-      email,
-      password,
-    });
-
-    const { user, token } = response.data;
-
+  const saveAuth = (user, token) => {
     if (!user || !token) {
-      throw new Error('Invalid login response from server.');
+      throw new Error('Invalid authentication response from server.');
     }
 
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('sb_token', token);
-
-    // Remove the old key to avoid conflicts.
     localStorage.removeItem('token');
 
     setUser(user);
     setToken(token);
 
     return user;
+  };
+
+  const login = async (email, password) => {
+    const response = await api.post('/auth/login', {
+      email: email.trim().toLowerCase(),
+      password,
+    });
+
+    return saveAuth(response.data.user, response.data.token);
+  };
+
+  const register = async (formData) => {
+    const response = await api.post('/auth/register', formData);
+
+    return saveAuth(response.data.user, response.data.token);
   };
 
   const logout = () => {
@@ -60,7 +66,9 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
