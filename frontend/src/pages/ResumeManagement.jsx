@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import axios from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import {
   FileText,
@@ -37,10 +37,7 @@ export default function ResumeManagement() {
 
     try {
       setLoading(true);
-
-      const response = await axios.get(`${API}/resumes`, {
-        headers,
-      });
+const response = await axios.get('/resumes');
 
       const data =
         response.data.resumes ||
@@ -97,11 +94,11 @@ export default function ResumeManagement() {
         file.name.replace(/\.[^.]+$/, '')
       );
 
-      await axios.post(`${API}/resumes/upload`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+await axios.post('/resumes/upload', formData, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 
       toast.success('Resume uploaded successfully');
       await loadResumes();
@@ -118,13 +115,12 @@ export default function ResumeManagement() {
   // Download an uploaded resume
   const downloadResume = async (resume) => {
     try {
-      const response = await axios.get(
-        `${API}/resumes/${resume._id}/file`,
-        {
-          headers,
-          responseType: 'blob',
-        }
-      );
+const response = await axios.get(
+  `/resumes/${resume._id}/file`,
+  {
+    responseType: 'blob',
+  }
+);
 
       const fileURL = URL.createObjectURL(response.data);
       const link = document.createElement('a');
@@ -156,9 +152,7 @@ export default function ResumeManagement() {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`${API}/resumes/${id}`, {
-        headers,
-      });
+await axios.delete(`/resumes/${id}`);
 
       setResumes((previous) =>
         previous.filter((resume) => resume._id !== id)
