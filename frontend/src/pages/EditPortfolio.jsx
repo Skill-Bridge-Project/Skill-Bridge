@@ -1,12 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Pencil, Trash2, ArrowLeft, Save, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const API = 'http://localhost:3000/api';
 
 const emptyForm = {
   title: '',
@@ -24,13 +23,11 @@ export default function EditPortfolio() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+
 
   const loadPortfolio = async () => {
     try {
-      const res = await axios.get(`${API}/auth/me`, { headers });
+const res = await api.get('/auth/me');
       const data = res.data.user || res.data.data || res.data;
 
       setProjects(Array.isArray(data.portfolio) ? data.portfolio : []);
@@ -94,14 +91,10 @@ export default function EditPortfolio() {
       };
 
       if (editingId) {
-        await axios.put(
-          `${API}/portfolio/${editingId}`,
-          payload,
-          { headers }
-        );
+await api.put(`/portfolio/${editingId}`, payload);
         toast.success('Project updated');
       } else {
-        await axios.post(`${API}/portfolio`, payload, { headers });
+        await api.post('/portfolio', payload);
         toast.success('Project added');
       }
 
@@ -120,7 +113,7 @@ export default function EditPortfolio() {
     if (!window.confirm('Delete this project?')) return;
 
     try {
-      await axios.delete(`${API}/portfolio/${id}`, { headers });
+      await api.delete(`/portfolio/${id}`);
       setProjects((prev) => prev.filter((project) => project._id !== id));
       toast.success('Project deleted');
     } catch (error) {

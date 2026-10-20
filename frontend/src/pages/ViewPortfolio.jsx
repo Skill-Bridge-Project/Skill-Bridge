@@ -1,12 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FolderOpen, Code2, ArrowLeft, Pencil } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const API = 'http://localhost:3000/api';
 
 export default function ViewPortfolio() {
   const { user, token } = useAuth();
@@ -21,15 +20,13 @@ export default function ViewPortfolio() {
       try {
         let data;
 
-        if (id) {
-          const res = await axios.get(`${API}/users/${id}`);
-          data = res.data.user || res.data.data || res.data;
-        } else if (token) {
-          const res = await axios.get(`${API}/auth/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          data = res.data.user || res.data.data || res.data;
-        }
+if (id) {
+  const res = await api.get(`/users/${id}`);
+  data = res.data.user || res.data.data || res.data;
+} else {
+  const res = await api.get('/auth/me');
+  data = res.data.user || res.data.data || res.data;
+}
 
         setProfile(data);
       } catch (error) {
@@ -42,7 +39,7 @@ export default function ViewPortfolio() {
     };
 
     loadPortfolio();
-  }, [id, token]);
+  }, [id]);
 
   const styles = {
     page: {

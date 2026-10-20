@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const API_URL = 'http://localhost:3000/api';
 const IST = 'Asia/Kolkata';
 
 const styles = {
@@ -243,14 +242,7 @@ export default function InterviewScheduling() {
     try {
       setLoading(true);
 
-      const response = await axios.get(
-        `${API_URL}/applications/employer`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+const response = await api.get('/applications/employer');
 
       const data = response.data;
       const list = Array.isArray(data)
@@ -365,21 +357,12 @@ export default function InterviewScheduling() {
 
     try {
       setSavingId(id);
-
-await axios.put(
-  `${API_URL}/applications/${id}/schedule`,
-  {
-    date: `${form.interviewDate}T${start24}:00+05:30`,
-    mode: 'Online',
-    link: (form.interviewLink || '').trim(),
-    notes: `Interview time: ${form.startTime} ${form.startPeriod} - ${form.endTime} ${form.endPeriod}`,
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
+await api.put(`/applications/${id}/schedule`, {
+  date: `${form.interviewDate}T${start24}:00+05:30`,
+  mode: 'Online',
+  link: (form.interviewLink || '').trim(),
+  notes: `Interview time: ${form.startTime} ${form.startPeriod} - ${form.endTime} ${form.endPeriod}`,
+});
 
       toast.success('Interview scheduled successfully!');
       await loadApplications();

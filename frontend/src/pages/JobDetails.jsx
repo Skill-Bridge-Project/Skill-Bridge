@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import {
   BriefcaseBusiness,
@@ -23,21 +23,13 @@ import {
 
 import { useAuth } from '../context/AuthContext';
 
-const API_URL = 'http://localhost:3000/api';
 const isMongoId = (id) => /^[a-f\d]{24}$/i.test(id || '');
 
 const JobDetails = () => {
   const { id } = useParams();
   const { user, token } = useAuth();
 
-  const authToken = token || localStorage.getItem('token');
-
-  const api = axios.create({
-    baseURL: API_URL,
-    headers: authToken
-      ? { Authorization: `Bearer ${authToken}` }
-      : {},
-  });
+const authToken = token || localStorage.getItem('sb_token');
 
   const [job, setJob] = useState(null);
   const [resumes, setResumes] = useState([]);

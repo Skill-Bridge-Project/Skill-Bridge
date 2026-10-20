@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const API = 'http://localhost:3000/api';
 
 export default function ResumeManagement() {
   const { token } = useAuth();
@@ -23,9 +22,7 @@ export default function ResumeManagement() {
 
   const fileInputRef = useRef(null);
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+  
 
   // Load the student's resumes
   const loadResumes = async () => {
@@ -65,6 +62,7 @@ const response = await axios.get('/resumes');
     if (!file) return;
 
     const allowed = /\.(pdf|doc|docx)$/i.test(file.name);
+    
 
     if (!allowed) {
       toast.error('Choose a PDF, DOC, or DOCX file');

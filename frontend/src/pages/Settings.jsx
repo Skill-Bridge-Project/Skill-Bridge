@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/axios.js';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
-const API = 'http://localhost:3000/api';
 
 export default function Settings() {
   const [deletingAccount, setDeletingAccount] = useState(false);
@@ -55,9 +54,7 @@ export default function Settings() {
     }
   }, [user]);
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+
 
   const handleProfileChange = (e) => {
     setProfile({
@@ -84,8 +81,7 @@ export default function Settings() {
     try {
       setSaving(true);
 
-      await axios.put(`${API}/profile`, profile, { headers });
-
+await api.put('/profile', profile);
       toast.success('Profile settings updated');
     } catch (error) {
       toast.error(
@@ -105,8 +101,7 @@ const handleDeleteAccount = async () => {
   try {
     setDeletingAccount(true);
 
-    await axios.delete(`${API}/profile`, { headers });
-
+await api.delete('/profile');
     toast.success('Account deleted successfully');
 
     logout();
@@ -135,14 +130,10 @@ const handleDeleteAccount = async () => {
     try {
       setChangingPassword(true);
 
-      await axios.put(
-        `${API}/auth/password`,
-        {
-          currentPassword: passwords.currentPassword,
-          newPassword: passwords.newPassword,
-        },
-        { headers }
-      );
+await api.put('/auth/password', {
+  currentPassword: passwords.currentPassword,
+  newPassword: passwords.newPassword,
+});
 
       toast.success('Password changed successfully');
 

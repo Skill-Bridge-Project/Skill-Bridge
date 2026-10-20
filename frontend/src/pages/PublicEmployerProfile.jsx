@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../lib/axios.js';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import toast from 'react-hot-toast';
@@ -18,7 +18,6 @@ import {
   LoaderCircle,
 } from 'lucide-react';
 
-const API_URL = 'http://localhost:3000/api';
 
 const initialForm = {
   companyName: '',
@@ -40,16 +39,12 @@ const PublicEmployerProfile = () => {
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+ 
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`${API_URL}/auth/me`, {
-          headers,
-        });
+const response = await api.get('/auth/me');
 
         const data = response.data.user || response.data.data || response.data;
 
@@ -105,9 +100,7 @@ const PublicEmployerProfile = () => {
         about: form.about,
       };
 
-      const response = await axios.put(`${API_URL}/profile`, payload, {
-        headers,
-      });
+const response = await api.put('/profile', payload);
 
       const updatedUser =
         response.data.user || response.data.data || response.data;
