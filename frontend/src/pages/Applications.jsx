@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import api from '../lib/axios';
 import {
   BriefcaseBusiness,
   Search,
@@ -16,7 +16,6 @@ import {
   Video,
 } from 'lucide-react';
 
-const API_URL = 'http://localhost:3000/api';
 
 const statusStyles = {
   applied: 'bg-amber-50 text-amber-700 border-amber-100',
@@ -129,16 +128,7 @@ export default function Applications() {
   const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState('');
 
-  const api = useMemo(
-    () =>
-      axios.create({
-        baseURL: API_URL,
-        headers: token
-          ? { Authorization: `Bearer ${token}` }
-          : {},
-      }),
-    [token]
-  );
+
 
   async function fetchApplications() {
     if (!token) {
