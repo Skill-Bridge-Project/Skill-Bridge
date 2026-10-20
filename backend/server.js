@@ -17,7 +17,7 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 app.use(
   cors({
-    origin: "http://localhost:5174",
+    //origin: "http://localhost:5174",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
