@@ -158,6 +158,12 @@ const StudentDashboard = () => {
       path: '/student/resumes',
     },
     {
+  title: 'Resume Builder',
+  description: 'Create and print a professional resume.',
+  icon: FileText,
+  path: '/student/resume-builder',
+},
+    {
       title: 'Career Assistant',
       description: 'Get help with career-related questions.',
       icon: Bot,
